@@ -6,6 +6,10 @@
 
 该模块依赖django，lxml，requests，当你安装该模块时，这些会被自动安装，如果本来就有安装，不会覆盖你原有的版本
 
+申请认证网址权限
+------
+要实现深圳大学的校园卡登录认证，首先你要到深圳大学的网络中心 提交申请，具体申请流程忘了，如果有知道的同学或者有链接的同学，求发pull request过来
+
 安装
 --
 
@@ -25,7 +29,7 @@ def index(request):
     return render(request, 'index.html')
 ```
 只需要导入装饰器login_szu，在需要登录的函数@login_szu
-就能实现登录跳转，return_url参数是必填的，表示你登录后跳转的url，之后你的view函数正常写就好，不会受到其他影响
+就能实现登录跳转，return_url参数是必填的，表示你登录后跳转的url（你的网站必须经过学校网络中心校园卡认证，否则无效，测试的时候本地改host进行测试，将127.0.0.1指向你认证过的网站），之后你的view函数正常写就好，不会受到其他影响
 
 登录成功后，你的request里面会自动多了两个session的值，在你写的view函数中，这样获取
 
@@ -35,6 +39,30 @@ request.session['stu_ic']#卡号比如130254
 #你也可以这样获取
 request.session.get('stu_no')
 request.session.get('stu_ic')
+```
+## 测试 ##
+
+本地测试的时候因为要用到认证过的网站，在linux可以这样修改host
+
+```
+sudo vim /etc/hosts
+```
+然后在改文件中添加 
+
+```
+127.0.0.1  yoursite.com#比如www.baidu.com
+```
+退出保存，重启网络服务
+
+```
+service network restart
+```
+然后你就可以运行你的django项目了
+
+```
+python manage.py runservser www.baidu.com:80
+#如果权限不够就执行
+sudo su
 ```
 
 团队
