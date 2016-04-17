@@ -4,13 +4,13 @@ from lxml import etree
 
 from django.http import HttpResponseRedirect
 from django.conf import settings
+from django.views.generic import View
 
 
 def login_szu(func):
     def wrapper(*args, **kw):
 
-        request=args[0]
-            
+        request=args[1] if isinstance(args[0], View) else args[0]#使装饰器能用在视图上
         ticket = request.GET.get('ticket')
         cas_server='https://auth.szu.edu.cn/cas.aspx/'
         return_url="http://"+settings.LOGIN_SZU_BUCKET_DOMAIN+request.get_full_path() if not settings.LOGIN_SZU_SECURE_URL else "https://"+settings.LOGIN_SZU_BUCKET_DOMAIN+request.get_full_path()
@@ -41,3 +41,6 @@ def login_szu(func):
             else:
                 return HttpResponseRedirect('%slogin?service=%s' %(cas_server,  return_url))
     return wrapper
+
+
+
