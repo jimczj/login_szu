@@ -19,27 +19,76 @@ pip install login_szu
 
 使用
 --
-在你django app 的views.py里面这样使用
+在django 的settings.py设置
+
+```
+LOGIN_SZU_SECURE_URL=False#或True
+LOGIN_SZU_BUCKET_DOMAIN="www.baidu.cn"
+```
+LOGIN_SZU_SECURE_URL表示是http还是https
+LOGIN_SZU_BUCKET_DOMAIN表示你的域名，需要去学校申请权限才可以登录
+
+
+----------
+
+
+在你django app 的views.py
+
+
+
+
+里面这样使用
 
 ```
 from login_szu.decorator import login_szu
 
-@login_szu(return_url="http://xx.xx.xxx.cn/")
+@login_szu
 def index(request):
     return render(request, 'index.html')
 ```
 只需要导入装饰器login_szu，在需要登录的函数@login_szu
-就能实现登录跳转，return_url参数是必填的，表示你登录后跳转的url（你的网站必须经过学校网络中心校园卡认证，否则无效，测试的时候本地改host进行测试，将127.0.0.1指向你认证过的网站），之后你的view函数正常写就好，不会受到其他影响
+就能实现登录跳转，之后你的view函数正常写就好，不会受到其他影响
 
-登录成功后，你的request里面会自动多了两个session的值，在你写的view函数中，这样获取
+登录成功后，你的request里面会自动多了6个session的值，在你写的view函数中，这样获取
 
 ```
-request.session['stu_no']#学号比如2014150122
-request.session['stu_ic']#卡号比如130254
-#你也可以这样获取
-request.session.get('stu_no')
-request.session.get('stu_ic')
+@login_szu
+def index(request):
+    print (request.session['szu_no'])#如2014150***
+    print (request.session['szu_ic'])#130***
+    print (request.session['szu_name'])#陈**
+    print (request.session['szu_org_name'])#深圳大学/计算机与软件学院/计算机科学/01
+    print (request.session['szu_sex'])#男
+    print (request.session['szu_rank_name'])#01
+    return render(request, 'index.html')
 ```
+
+**szu_rank_name对照表**
+> //szu_rank_name对照表
+//ID	用户类别
+//01	本科生
+//02	研究生
+//03	博士生
+//04	留学生
+//05	教工
+//11	成教学生
+//07	教工家属
+//08	测试人员
+//13	工作人员
+//14	离退休教工
+//21	博士后
+//17	合作银行
+//25	校内工作
+//30	校外绿色通道
+//24	校外人员
+//20	外籍教师
+//23	校友
+//28	交换留学生
+//12	自考生
+//16	外联办学生
+//26	校企人员
+//29	消费卡贵宾
+
 ## 测试 ##
 
 本地测试的时候因为要用到认证过的网站，在linux可以这样修改host
@@ -67,7 +116,8 @@ sudo su
 
 团队
 --
-
+学子天地技术部
  - 码农：阿集 
  - 项目发起人：不兄 
  - 指导者：钟浩贤
+github地址：https://github.com/jimczj/login_szu
