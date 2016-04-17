@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'login_szu',
-    version = '0.0.2',
+    version = '1.0.0',
     keywords = ('login_szu', 'szu'),
     description = 'A package for login szu',
     license = 'MIT License',
