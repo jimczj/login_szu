@@ -109,7 +109,7 @@ service network restart
 然后你就可以运行你的django项目了
 
 ```
-python manage.py runservser www.baidu.com:80
+python manage.py runserver www.baidu.com:80
 #如果权限不够就执行
 sudo su
 ```
